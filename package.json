@@ -1,0 +1,23 @@
+{
+  "name": "liquid-collection",
+  "version": "1.0.0",
+  "description": "A Tailwind CSS collection for Liquid templates",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"shopify theme dev\" \"npx @tailwindcss/cli -i ./assets/tailwind.input.css -o ./assets/tailwind.output.css --watch\"",
+    "shopify-dev": "shopify theme dev",
+    "tailwind-watch": "npx @tailwindcss/cli -i ./assets/tailwind.input.css -o ./assets/tailwind.output.css --watch",
+    "theme-push": "shopify theme push",
+    "theme-pull": "shopify theme pull"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.8",
+    "tailwindcss": "^4.1.8"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
