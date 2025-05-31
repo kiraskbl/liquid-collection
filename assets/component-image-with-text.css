@@ -1,4 +1,4 @@
-.image-with-text .grid {
+.image-with-text .grid-list {
   margin-bottom: 0;
 }
 
@@ -242,17 +242,17 @@
   }
 
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__media-item:after,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__media,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__media
     img,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__media
     .placeholder-svg,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
@@ -269,13 +269,13 @@
   }
 
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__text-item:after,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__content,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__content:after,
   .image-with-text.collapse-corners:not(.image-with-text--overlap)
     .image-with-text__grid--reverse
@@ -296,7 +296,7 @@
   }
 
   .image-with-text.collapse-borders:not(.image-with-text--overlap)
-    .grid:not(.image-with-text__grid--reverse)
+    .grid-list:not(.image-with-text__grid--reverse)
     .image-with-text__content {
     border-left: 0;
   }
@@ -395,7 +395,7 @@
 
 /* check for flexbox gap in older Safari versions */
 @supports not (inset: 10px) {
-  .image-with-text .grid {
+  .image-with-text .grid-list {
     margin-left: 0;
   }
 }
