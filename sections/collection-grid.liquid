@@ -53,18 +53,16 @@
       {%- endif -%}
       {% comment %}Product store status end{% endcomment %}
 
-      <div class="relative border border-grey-5 rounded-[10px] p-8 h-fit">
+      {% comment %}NOTE: Media wrapper padding removed on purpose to get better hover view{% endcomment %}
+      <div class="relative border border-grey-5 rounded-[10px] h-fit group overflow-hidden cursor-pointer">
         <img
             src="{{ mainMedia.src | image_url: width: 400 }}"
             alt="{{ mainMedia.alt | escape }}"
             width="{{ mainMedia.width }}"
             height="{{ mainMedia.height }}"
-            class="rounded-[10px]"
+            class="rounded-[10px] transition-opacity duration-300 object-cover"
         >
 
-        {% comment %}
-        TODO: Implement hoved functionality.
-        {% endcomment %}
         {% if secondaryMedia != blank %}
           <img
               src="{{ secondaryMedia.value | image_url: width: 400 }}"
@@ -73,7 +71,7 @@
               width="{{ mainMedia.width }}"
               height="{{ mainMedia.height }}"
               loading="lazy"
-              class="absolute inset-0 h-full w-full -z-1 rounded-[10px]"
+              class="object-contain max-h-full w-full bg-inverse absolute inset-0 rounded-[10px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           >
         {% endif %}
       </div>
@@ -97,8 +95,8 @@
             >
               <span
                   class="bg-left-bottom bg-gradient-to-r from-active to-active bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-    {{ title | escape }}
-  </span>
+                {{ title | escape }}
+              </span>
             </a>
           </h5>
 
