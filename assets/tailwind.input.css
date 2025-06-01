@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --color-inverse: #FFFFFF;
+  --color-grey-5: #E8E8E8;
+  --color-grey-10: #929292;
+  --color-dark: #111111;
+  --color-accent: #FF0000;
+  --color-muted: #F9F9F9;
+  --color-active: #0A4874;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --leading-sm: 16px;
+  --leading-base: 18px;
+  --font-main: var(--font-heading-family);
+  --font-accent: var(--font-body-family);
+}
