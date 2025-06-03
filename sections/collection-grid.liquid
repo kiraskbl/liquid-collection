@@ -14,105 +14,13 @@
 {% endcomment %}
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1280px] my-0 mx-auto p-6" id="collectionGrid">
   {%- for product in products -%}
-    {%- assign selectedVariant = product.selected_or_first_available_variant -%}
-    {%- assign mainMedia = selectedVariant.featured_image -%}
-    {%- assign secondaryMedia = selectedVariant.metafields.custom.compare_image -%}
-    {%- assign brand = product.metafields.custom.brand -%}
-    {%- assign title = product.title -%}
-    {%- assign isMediaHovered = false -%}
-    {%- assign compareAtPrice = selectedVariant.compare_at_price -%}
-    {%- assign price = selectedVariant.price -%}
-
-    {% comment %}Status calculation may be updated based on customer's need{% endcomment %}
-    {% assign onSale = false %}
-    {% if compareAtPrice > price and selectedVariant.available %}
-      {% assign onSale = true %}
-    {% endif %}
-    {% assign isSoldOut = false %}
-    {% if selectedVariant.available == false %}
-      {% assign isSoldOut = true %}
-    {% endif %}
-
-    <div class="relative flex flex-col gap-4 bg-inverse font-main">
-      {% comment %}Product store status start{% endcomment %}
-      {%- if onSale or isSoldOut -%}
-        <div class="
-           flex items-center
-           absolute h-[30px] top-8 left-8 z-10
-           border rounded-[25px] py-2 px-5
-           {% if isSoldOut %}text-grey-10 border-grey-10{% endif %}
-           {% if onSale %}text-accent border-accent{% endif %}
-           font-accent font-medium text-base leading-5">
-          {%- if isSoldOut -%}
-            {% comment %}Add translation in case of multiple languages{% endcomment %}
-            Sold Out
-          {%- elsif onSale -%}
-            On Sale!
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-      {% comment %}Product store status end{% endcomment %}
-
-      {% comment %}NOTE: Media wrapper padding removed on purpose to get better hover view{% endcomment %}
-      <div class="relative border border-grey-5 rounded-[10px] h-fit group overflow-hidden cursor-pointer">
-        <img
-            src="{{ mainMedia.src | image_url: width: 400 }}"
-            alt="{{ mainMedia.alt | escape }}"
-            width="{{ mainMedia.width }}"
-            height="{{ mainMedia.height }}"
-            class="rounded-[10px] transition-opacity duration-300 object-cover"
-        >
-
-        {% if secondaryMedia != blank %}
-          <img
-              src="{{ secondaryMedia.value | image_url: width: 400 }}"
-              {% comment %}Main image sizes used{% endcomment %}
-              alt="{{ mainMedia.alt | escape }}"
-              width="{{ mainMedia.width }}"
-              height="{{ mainMedia.height }}"
-              loading="lazy"
-              class="object-contain max-h-full w-full bg-inverse absolute inset-0 rounded-[10px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          >
-        {% endif %}
-      </div>
-
-      <div class="grid gap-[15px] text-dark">
-        <div>Swatches</div>
-
-        <div class="grid gap-[6px] tracking-normal">
-          {% if brand != blank %}
-            {% comment %}Better to add own Typography component to handle text variantion{% endcomment %}
-            {% comment %}but it ok untill we have it in 1 file only{% endcomment %}
-            <p class="text-sm leading-sm">{{ brand.value }}</p>
-          {% endif %}
-
-          {% comment %}Required added to override project h5 sizes and save semantic{% endcomment %}
-          <h5 class="!text-base !leading-base">
-            <a
-                href="{{ selectedVariant.url }}"
-                aria-labelledby="PDP Link {{ product.id }}"
-                class="group text-active transition-all duration-300 ease-in-out"
-            >
-              <span
-                  class="bg-left-bottom bg-gradient-to-r from-active to-active bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-                {{ title | escape }}
-              </span>
-            </a>
-          </h5>
-
-          {% comment %}Start of Price{% endcomment %}
-          <div class="flex gap-[8px] text-sm leading-sm text-dark">
-            {%- if compareAtPrice -%}
-              <s>{{ compareAtPrice | money }}</s>
-            {%- endif -%}
-            <span class="{% if compareAtPrice %}text-accent{% endif %}">
-              {{ price | money }}
-            </span>
-          </div>
-          {% comment %}End of Price{% endcomment %}
-        </div>
-      </div>
-    </div>
+    {% render 'product-card',
+        product: product,
+        show_secondary_image: section.settings.show_secondary_image,
+        show_rating: section.settings.show_rating,
+        quick_add: section.settings.quick_add,
+        section_id: section.id
+    %}
   {%- endfor -%}
 </div>
 
@@ -127,13 +35,29 @@
       "type": "collection",
       "id": "collection",
       "label": "Collection Grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show secondary image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "quick_add",
+      "default": false,
+      "label": "Show quick ATC button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show product rating"
     }
   ],
   "presets": [
     {
-      "name": "Collection Grid",
-      "settings": {},
-      "blocks": []
+      "name": "Collection Grid"
     }
   ]
 }
