@@ -1,0 +1,141 @@
+{% comment %}
+  Renders a product card
+
+  Accepts:
+  - product: {Object} Product Liquid object (optional)
+  - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
+  - show_rating: {Boolean} Show the product rating. Default: false
+  - quick_add: {Boolean} Show the quick add button.
+  - section_id: {String} The ID of the section that contains this card.
+
+  Usage:
+  {% render 'product-card', quick_add: section.settings.quick_add %}
+{% endcomment %}
+
+{%- if product and product != empty -%}
+  {% assign first_variant = product.selected_or_first_available_variant %}
+  {%- assign main_image = first_variant.featured_image -%}
+  {%- assign secondary_image = first_variant.metafields.custom.compare_image -%}
+  {%- assign brand = product.metafields.custom.brand -%}
+  {%- assign title = product.title -%}
+  {%- assign compare_price = first_variant.compare_at_price -%}
+  {%- assign price = first_variant.price -%}
+
+  {% comment %}Status calculation may be updated based on customer's need{% endcomment %}
+  {% assign on_sale = false %}
+  {% if compare_price > price and first_variant.available %}
+    {% assign on_sale = true %}
+  {% endif %}
+  {% assign sold_out = false %}
+  {% if first_variant.available == false %}
+    {% assign sold_out = true %}
+  {% endif %}
+
+
+  <div class="relative flex flex-col gap-[15px] bg-inverse font-main">
+    {% comment %}Product store status start{% endcomment %}
+    {%- if on_sale or sold_out -%}
+      <div class="
+           flex items-center
+           absolute h-[30px] top-8 left-8 z-10
+           border rounded-[25px] py-2 px-5
+           {% if sold_out %}text-grey-10 border-grey-10{% endif %}
+           {% if on_sale %}text-accent border-accent{% endif %}
+           font-accent font-medium text-base leading-5">
+        {%- if sold_out -%}
+          {% comment %}Add translation in case of multiple languages{% endcomment %}
+          Sold Out
+        {%- elsif on_sale -%}
+          On Sale!
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    {% comment %}Product store status end{% endcomment %}
+
+    {% comment %}NOTE: Media wrapper padding removed on purpose to get better hover view{% endcomment %}
+    <div class="relative border border-grey-5 rounded-[10px] h-fit group overflow-hidden cursor-pointer">
+      <img
+          src="{{ main_image.src | image_url: width: 400 }}"
+          alt="{{ main_image.alt | escape }}"
+          width="{{ main_image.width }}"
+          height="{{ main_image.height }}"
+          class="rounded-[10px] transition-opacity duration-300 object-cover p-8"
+      >
+
+      {% if show_secondary_image and secondary_image != blank %}
+        <img
+            src="{{ secondary_image.value | image_url: width: 400 }}"
+            {% comment %}Main image sizes used{% endcomment %}
+            alt="{{ main_image.alt | escape }}"
+            width="{{ main_image.width }}"
+            height="{{ main_image.height }}"
+            loading="lazy"
+            class="object-contain max-h-full w-full bg-inverse absolute inset-0 rounded-[10px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        >
+      {% endif %}
+    </div>
+
+    <div class="grid gap-[15px] text-dark">
+      {%- for option in product.options_with_values -%}
+        <div class="flex flex-wrap justify-start gap-[8px]">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign swatch_value = value.swatch.color
+              assign option_variant_id = value.variant.id
+              assign is_selected = value.selected
+            -%}
+            {% if swatch_value != blank %}
+              <div class="flex w-10 h-10 justify-center items-center rounded-full
+                  {% if is_selected %}border border-active{% endif %}
+                "
+              >
+                <button
+                    class="block w-8 h-8 rounded-full cursor-pointer
+                      {% if is_selected %}text-accent{% endif %}
+                    "
+                    style="background-color: {{ swatch_value }};"
+                    data-option-value="{{ value }}"
+                    data-option-value-id="{{ value.id }}"
+                    aria-label="Select {{ value }}"
+                ></button>
+              </div>
+            {% endif %}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+
+      <div class="grid gap-[6px] tracking-normal">
+        {% if brand != blank %}
+          {% comment %}Better to add own Typography component to handle text variantion{% endcomment %}
+          {% comment %}but it ok untill we have it in 1 file only{% endcomment %}
+          <p class="text-sm leading-sm">{{ brand.value }}</p>
+        {% endif %}
+
+        {% comment %}Required added to override project h5 sizes and save semantic{% endcomment %}
+        <h5 class="!text-base !leading-base">
+          <a
+              href="{{ first_variant.url }}"
+              aria-labelledby="PDP Link {{ product.id }}"
+              class="group text-active transition-all duration-300 ease-in-out"
+          >
+              <span
+                  class="bg-left-bottom bg-gradient-to-r from-active to-active bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
+                {{ title | escape }}
+              </span>
+          </a>
+        </h5>
+
+        {% comment %}Start of Price{% endcomment %}
+        <div class="flex gap-[8px] text-sm leading-sm text-dark">
+          {%- if compare_price -%}
+            <s>{{ compare_price | money }}</s>
+          {%- endif -%}
+          <span class="{% if compare_price %}text-accent{% endif %}">
+              {{ price | money }}
+            </span>
+        </div>
+        {% comment %}End of Price{% endcomment %}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
