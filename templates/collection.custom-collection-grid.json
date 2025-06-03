@@ -17,6 +17,16 @@
         "color_scheme": "scheme-1"
       }
     },
+    "collection_grid_ApVVBf": {
+      "type": "collection-grid",
+      "name": "Collection Grid",
+      "settings": {
+        "collection": "fe-technical-assessment",
+        "show_secondary_image": true,
+        "quick_add": true,
+        "show_rating": true
+      }
+    },
     "product-grid": {
       "type": "main-collection-product-grid",
       "disabled": true,
@@ -36,13 +46,6 @@
         "enable_sorting": true,
         "padding_top": 36,
         "padding_bottom": 36
-      }
-    },
-    "collection_grid_ApVVBf": {
-      "type": "collection-grid",
-      "name": "Collection Grid",
-      "settings": {
-        "collection": "fe-technical-assessment"
       }
     }
   },
