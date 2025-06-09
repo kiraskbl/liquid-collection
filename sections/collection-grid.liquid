@@ -8,10 +8,10 @@
   The code is designed to be responsive and uses Tailwind CSS for styling.
   NOTE: Size variables may not match with Figma design due to most match Tailwind var used.
   Additional variables added to tailwind.input.css.
-
-  NOTE2: Title selected as a link to the product page, but current implementation
-  may be updated based on requirements
 {% endcomment %}
+
+<script src="{{ 'product-card.js' | asset_url }}" defer="defer"></script>
+
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1280px] my-0 mx-auto p-6" id="collectionGrid">
   {%- for product in products -%}
     {% render 'product-card',
