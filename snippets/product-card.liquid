@@ -13,15 +13,23 @@
 {% endcomment %}
 
 {%- if product and product != empty -%}
-  {% assign first_variant = product.selected_or_first_available_variant %}
-  {%- assign main_image = first_variant.featured_image -%}
-  {%- assign secondary_image = first_variant.metafields.custom.compare_image -%}
+  {% comment %}Props{% endcomment %}
+  {%- assign quick_add = quick_add | default: false -%}
+  {%- assign show_secondary_image = show_secondary_image | default: false -%}
+  {%- assign show_rating = show_rating | default: false -%}
+
+
+  {% comment %}Product Options{% endcomment %}
+  {%- assign first_variant = product.selected_or_first_available_variant -%}
   {%- assign brand = product.metafields.custom.brand -%}
   {%- assign title = product.title -%}
+  {% comment %}Variant Options{% endcomment %}
+  {%- assign main_image = first_variant.featured_image -%}
+  {%- assign secondary_image = first_variant.metafields.custom.compare_image -%}
   {%- assign compare_price = first_variant.compare_at_price -%}
   {%- assign price = first_variant.price -%}
 
-  {% comment %}Status calculation may be updated based on customer's need{% endcomment %}
+  {% comment %}Stock Status calculation{% endcomment %}
   {% assign on_sale = false %}
   {% if compare_price > price and first_variant.available %}
     {% assign on_sale = true %}
@@ -31,8 +39,32 @@
     {% assign sold_out = true %}
   {% endif %}
 
+  <div class="product-card relative flex flex-col gap-[15px] bg-inverse font-main">
+    {% comment %}Product variants JSON start{% endcomment %}
+    {% comment %}This is used for product variant selection and quick add{% endcomment %}
+    {% comment %}It is important to keep this JSON valid and properly formatted{% endcomment %}
+    {% comment %}Possible update: use fetch in function or pass required data as data-attribute{% endcomment %}
+    {% capture variants_json %}
+      [
+      {% for variant in product.variants %}
+        {
+        "id": {{ variant.id | json }},
+        "price": {{ variant.price | json }},
+        "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+        "compare_image": {{ variant.metafields.custom.compare_image | image_url: width: 400 | json }},
+        "url": {{ variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+      ]
+    {% endcapture %}
+    <script type="application/json" class="product-variants-json">
+      {{ variants_json | strip }}
 
-  <div class="relative flex flex-col gap-[15px] bg-inverse font-main">
+    </script>
+    <script>
+      window.shopCurrencyFormat = "{{ shop.money_format | escape }}";
+    </script>
+
     {% comment %}Product store status start{% endcomment %}
     {%- if on_sale or sold_out -%}
       <div class="
@@ -59,7 +91,7 @@
           alt="{{ main_image.alt | escape }}"
           width="{{ main_image.width }}"
           height="{{ main_image.height }}"
-          class="rounded-[10px] transition-opacity duration-300 object-cover p-8"
+          class="product-media rounded-[10px] transition-opacity duration-300 object-cover p-8"
       >
 
       {% if show_secondary_image and secondary_image != blank %}
@@ -70,14 +102,14 @@
             width="{{ main_image.width }}"
             height="{{ main_image.height }}"
             loading="lazy"
-            class="object-contain max-h-full w-full bg-inverse absolute inset-0 rounded-[10px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            class="product-secondary-media object-contain max-h-full w-full bg-inverse absolute inset-0 rounded-[10px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         >
       {% endif %}
     </div>
 
     <div class="grid gap-[15px] text-dark">
       {%- for option in product.options_with_values -%}
-        <div class="flex flex-wrap justify-start gap-[8px]">
+        <div class="variant-swatches flex flex-wrap justify-start gap-[8px]">
           {%- for value in option.values -%}
             {%- liquid
               assign swatch_value = value.swatch.color
@@ -85,18 +117,14 @@
               assign is_selected = value.selected
             -%}
             {% if swatch_value != blank %}
-              <div class="flex w-10 h-10 justify-center items-center rounded-full
-                  {% if is_selected %}border border-active{% endif %}
-                "
+              <div class="swatch flex w-10 h-10 justify-center items-center rounded-full
+                  {% if is_selected %}border border-active{% endif %}"
               >
                 <button
-                    class="block w-8 h-8 rounded-full cursor-pointer
-                      {% if is_selected %}text-accent{% endif %}
-                    "
+                    class="block w-8 h-8 rounded-full cursor-pointer"
                     style="background-color: {{ swatch_value }};"
-                    data-option-value="{{ value }}"
-                    data-option-value-id="{{ value.id }}"
                     aria-label="Select {{ value }}"
+                    onclick="selectVariant({{ option_variant_id }})"
                 ></button>
               </div>
             {% endif %}
@@ -116,7 +144,7 @@
           <a
               href="{{ first_variant.url }}"
               aria-labelledby="PDP Link {{ product.id }}"
-              class="group text-active transition-all duration-300 ease-in-out"
+              class="pdp-redirect group text-active transition-all duration-300 ease-in-out"
           >
               <span
                   class="bg-left-bottom bg-gradient-to-r from-active to-active bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
@@ -127,10 +155,8 @@
 
         {% comment %}Start of Price{% endcomment %}
         <div class="flex gap-[8px] text-sm leading-sm text-dark">
-          {%- if compare_price -%}
-            <s>{{ compare_price | money }}</s>
-          {%- endif -%}
-          <span class="{% if compare_price %}text-accent{% endif %}">
+          <s class="compare-price {% if compare_price %}block{% endif %}hidden">{{ compare_price | money }}</s>
+          <span class="original-price {% if compare_price %}text-accent{% endif %}">
               {{ price | money }}
             </span>
         </div>
