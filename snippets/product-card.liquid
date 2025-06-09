@@ -51,6 +51,7 @@
         "id": {{ variant.id | json }},
         "price": {{ variant.price | json }},
         "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+        "featured_image": {{ variant.featured_image | image_url: width: 400 | json }},
         "compare_image": {{ variant.metafields.custom.compare_image | image_url: width: 400 | json }},
         "url": {{ variant.url | json }}
         }{% unless forloop.last %},{% endunless %}
