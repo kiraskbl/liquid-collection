@@ -16,6 +16,8 @@ const selectVariant = (variantId) => {
    * @property {string|null} featured_image
    * @property {string|null} compare_image
    * @property {string} url
+   * @property {boolean} available
+   * @property {boolean} on_sale
    */
   const variant = variants.find(variant => variant.id === variantId);
 
@@ -73,6 +75,33 @@ const selectVariant = (variantId) => {
       statusBadge.textContent = 'Sold Out';
       statusBadge.classList.add('text-grey-10');
       statusBadge.classList.remove('hidden', 'text-accent');
+    }
+  }
+
+  // Update ATC button state
+  const quickAddForm = productCard.querySelector('.quick-add-form');
+  if (quickAddForm) {
+    // Update hidden input value
+    const hiddenInput = quickAddForm.querySelector('.variant-id-input');
+    if (hiddenInput) {
+      hiddenInput.value = variant.id;
+    }
+
+    // Update button state
+    const button = quickAddForm.querySelector('button[type="submit"]');
+    if (button) {
+      // Update button text
+      const svg = button.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('title', variant.available ? 'Add to Cart' : 'Sold Out');
+      }
+
+      // Update button attributes
+      if (variant.available) {
+        button.removeAttribute('disabled');
+      } else {
+        button.setAttribute('disabled', '');
+      }
     }
   }
 }

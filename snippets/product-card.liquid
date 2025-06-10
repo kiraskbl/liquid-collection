@@ -4,7 +4,6 @@
   Accepts:
   - product: {Object} Product Liquid object (optional)
   - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
-  - show_rating: {Boolean} Show the product rating. Default: false
   - quick_add: {Boolean} Show the quick add button.
   - section_id: {String} The ID of the section that contains this card.
 
@@ -16,8 +15,6 @@
   {% comment %}Props{% endcomment %}
   {%- assign quick_add = quick_add | default: false -%}
   {%- assign show_secondary_image = show_secondary_image | default: false -%}
-  {%- assign show_rating = show_rating | default: false -%}
-
 
   {% comment %}Product Options{% endcomment %}
   {%- assign first_variant = product.selected_or_first_available_variant -%}
@@ -81,13 +78,13 @@
            {% if sold_out %}text-grey-10 border-grey-10{% endif %}
            {% if on_sale %}text-accent border-accent{% endif %}
            font-accent font-medium text-base leading-5">
-        {%- if sold_out -%}
-          {% comment %}Add translation in case of multiple languages{% endcomment %}
-          Sold Out
-        {%- elsif on_sale -%}
-          On Sale!
-        {%- endif -%}
-      </div>
+      {%- if sold_out -%}
+        {% comment %}Add translation in case of multiple languages{% endcomment %}
+        Sold Out
+      {%- elsif on_sale -%}
+        On Sale!
+      {%- endif -%}
+    </div>
     {% comment %}Product store status end{% endcomment %}
 
     {% comment %}NOTE: Media wrapper padding removed on purpose to get better hover view{% endcomment %}
@@ -167,6 +164,29 @@
             </span>
         </div>
         {% comment %}End of Price{% endcomment %}
+
+        {% if quick_add %}
+          <form method="post" action="/cart/add" class="quick-add-form">
+            <input type="hidden" name="id" value="{{ first_variant.id }}" class="variant-id-input">
+            <button type="submit" class="
+              flex items-center justify-center
+              w-full h-[40px]
+              rounded-[25px] cursor-pointer
+              font-medium text-sm leading-sm
+              transition-all duration-300
+              shadow-md
+              border border-accent-dark
+              hover:shadow-lg
+              disabled:cursor-not-allowed
+              disabled:border-accent-dark/50
+              disabled:text-dark/50
+              "
+              {% if sold_out %}disabled{% endif %}
+            >
+            {% if sold_out %}Sold Out{% else %}Add to Cart{% endif %}
+            </button>
+          </form>
+        {% endif %}
       </div>
     </div>
   </div>
