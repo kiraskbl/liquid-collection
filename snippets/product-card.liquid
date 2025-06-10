@@ -47,28 +47,34 @@
     {% capture variants_json %}
       [
       {% for variant in product.variants %}
+        {% assign is_on_sale = false %}
+        {% if variant.compare_at_price > variant.price and variant.available %}
+          {% assign is_on_sale = true %}
+        {% endif %}
+
         {
         "id": {{ variant.id | json }},
         "price": {{ variant.price | json }},
         "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
         "featured_image": {{ variant.featured_image | image_url: width: 400 | json }},
         "compare_image": {{ variant.metafields.custom.compare_image | image_url: width: 400 | json }},
-        "url": {{ variant.url | json }}
+        "url": {{ variant.url | json }},
+        "available": {{ variant.available | json }},
+        "on_sale": {{ is_on_sale | json }}
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
       ]
     {% endcapture %}
+
     <script type="application/json" class="product-variants-json">
       {{ variants_json | strip }}
-
     </script>
     <script>
       window.shopCurrencyFormat = "{{ shop.money_format | escape }}";
     </script>
 
     {% comment %}Product store status start{% endcomment %}
-    {%- if on_sale or sold_out -%}
-      <div class="
+    <div class="product-store-status
            flex items-center
            absolute h-[30px] top-8 left-8 z-10
            border rounded-[25px] py-2 px-5
@@ -82,7 +88,6 @@
           On Sale!
         {%- endif -%}
       </div>
-    {%- endif -%}
     {% comment %}Product store status end{% endcomment %}
 
     {% comment %}NOTE: Media wrapper padding removed on purpose to get better hover view{% endcomment %}

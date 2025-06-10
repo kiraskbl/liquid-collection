@@ -26,21 +26,18 @@ const selectVariant = (variantId) => {
   swatchButtons.forEach(btn => btn.classList.remove('border', 'border-active'));
   const targetParent = button.closest('.swatch');
   targetParent.classList.add('border', 'border-active');
-  // Finish active swatch update
 
   // Update card image based on selected variant passed as button data attributes
   updateMedia(productCard, '.product-media', variant.featured_image);
   updateMedia(productCard, '.product-secondary-media', variant.compare_image);
-  // Finish media update
 
   //Update URL to PDP with variant id
   const link = productCard.querySelector('.pdp-redirect');
   if (link) {
     link.href = variant.url;
   }
-  // Finish URL update
 
-  // Update Prices
+  // Update prices
   const priceElement = productCard.querySelector('.original-price');
   if (priceElement) {
     priceElement.textContent = formatMoney(variant.price);
@@ -58,7 +55,26 @@ const selectVariant = (variantId) => {
       priceElement.classList.remove('text-accent');
     }
   }
-  // Finish price update
+
+  // Update status badge
+  const statusBadge = productCard.querySelector('.product-store-status');
+  if (statusBadge) {
+    if (variant.available) {
+      if (variant.on_sale) {
+        statusBadge.textContent = 'On Sale!';
+        statusBadge.classList.add('text-accent');
+        statusBadge.classList.remove('hidden', 'text-grey-10');
+      } else {
+        statusBadge.textContent = '';
+        statusBadge.classList.add('hidden');
+        statusBadge.classList.remove('text-accent', 'text-grey-10');
+      }
+    } else {
+      statusBadge.textContent = 'Sold Out';
+      statusBadge.classList.add('text-grey-10');
+      statusBadge.classList.remove('hidden', 'text-accent');
+    }
+  }
 }
 
 const updateMedia = (parent, selector, src) => {
