@@ -17,7 +17,6 @@
     {% render 'product-card',
         product: product,
         show_secondary_image: section.settings.show_secondary_image,
-        show_rating: section.settings.show_rating,
         quick_add: section.settings.quick_add,
         section_id: section.id
     %}
@@ -47,12 +46,6 @@
       "id": "quick_add",
       "default": false,
       "label": "Show quick ATC button"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "default": false,
-      "label": "Show product rating"
     }
   ],
   "presets": [
