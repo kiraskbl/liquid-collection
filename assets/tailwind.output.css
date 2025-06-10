@@ -416,6 +416,9 @@
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
+  .text-center {
+    text-align: center;
+  }
   .font-accent {
     font-family: var(--font-accent);
   }
@@ -441,6 +444,10 @@
   .leading-5 {
     --tw-leading: calc(var(--spacing) * 5);
     line-height: calc(var(--spacing) * 5);
+  }
+  .leading-base {
+    --tw-leading: var(--leading-base);
+    line-height: var(--leading-base);
   }
   .leading-sm {
     --tw-leading: var(--leading-sm);
